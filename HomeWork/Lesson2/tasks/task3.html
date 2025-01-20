@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Задача 3</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  </head>
+  <!-- Елемент тренажера англійської. Виводимо зображення елемента і слово. Користувач вводить відповідь. Якщо вірно – відтворюємо фразу «Добре. Молодець!» (і додаємо зелену рамку до елемента), якщо ні - то відтворюємо фразу «Невірно, спробуйте ще раз» (і додаємо червону рамку).
+
+ -->
+  <body>
+    <style>
+      #app {
+        display: flex;
+        justify-items: center;
+      }
+      .container {
+        margin: 0 auto;
+        display: inline-flex;
+        flex-direction: column;
+        justify-items: center;
+        gap: 15px;
+        align-items: center;
+      }
+      .img {
+        width: 400px;
+      }
+      .green {
+        border: 2px solid green;
+      }
+      .red {
+        border: 2px solid red;
+      }
+    </style>
+    <div id="app">
+      <div class="container" :class="isCorrectColor">
+        <img src="img/kettle.jpg" class="img" />
+        <h1>Kettle</h1>
+        <label>Ваш переклад <input type="text" v-model="userAnswer" /></label>
+        <button @click="check">Перевірити</button>
+        <div v-show="isEntered">{{isCorrect}}</div>
+      </div>
+    </div>
+
+    <script>
+      const { createApp } = Vue;
+
+      const correctAnswer = "чайник";
+
+      createApp({
+        data() {
+          return {
+            userAnswer: null,
+            result: null
+          };
+        },
+        methods: {
+          check() {
+            this.userAnswer.toLowerCase() === correctAnswer
+              ? (this.result = true)
+              : (this.result = false);
+          }
+        },
+
+        computed: {
+          isEntered() {
+            return this.result !== null;
+          },
+          isCorrect() {
+            if (this.isEntered) {
+              return this.result
+                ? "Добре. Молодець!"
+                : "Невірно, спробуйте ще раз";
+            }
+          },
+          isCorrectColor() {
+            if (this.isEntered) {
+              return this.result ? "green" : "red";
+            }
+          }
+        }
+      }).mount("#app");
+    </script>
+  </body>
+</html>

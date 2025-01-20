@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Задача 6</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  </head>
+  <!--  На кухню поступають замовлення. Спочатку ми додаємо їх у список “Очікують на виконання”, якщо повар береться робити — замовлення переходить у список “Виконуються”,   якщо замовлення виконано — переходить у список “Готові до виносу”. Якщо натиснути на “Подано” - страва зникає з таблиці
+ -->
+  <body>
+    <style>
+      h2 {
+        margin: 0;
+        padding: 10px;
+      }
+      #app {
+        padding: 50px;
+        display: flex;
+        gap: 20px;
+        flex-direction: column;
+      }
+      .main-body {
+        display: flex;
+      }
+      .itemBlock {
+        display: flex;
+        border: 1px solid black;
+        flex-direction: column;
+      }
+      .block-header {
+        border: 1px solid black;
+      }
+      .dishItem {
+        border: 1px solid black;
+        padding: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 30px;
+      }
+    </style>
+    <div id="app">
+      <div class="input-section">
+        <label
+          >Нова замовлена страва: <input type="text" v-model="orderedDish"
+        /></label>
+        <button @click="order(orderedDish)">Додати</button>
+      </div>
+      <div class="main-body">
+        <div class="itemBlock">
+          <h2 class="block-header">Очікують на виконання</h2>
+          <template v-for="dish in waitingList" :key="waitingList">
+            <div class="dishItem">
+              <div>{{dish}}</div>
+              <button @click="cook(dish)">Готувати</button>
+            </div>
+          </template>
+        </div>
+        <div class="itemBlock">
+          <h2 class="block-header">Виконуються</h2>
+          <template v-for="dish in processingList" :key="processingList">
+            <div class="dishItem">{{dish}}</div>
+            <div></div>
+          </template>
+        </div>
+        <div class="itemBlock">
+          <h2 class="block-header">Готові до виносу</h2>
+          <template v-for="dish in completedList" :key="completedList">
+            <div class="dishItem">
+              <div>{{dish}}</div>
+              <button @click="deliver(dish)">Подати</button>
+            </div>
+          </template>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const { createApp } = Vue;
+
+      createApp({
+        data() {
+          return {
+            orderedDish: "",
+            waitingList: [],
+            processingList: [],
+            completedList: []
+          };
+        },
+        methods: {
+          order(dish) {
+            this.waitingList.push(dish);
+            this.orderedDish = "";
+          },
+          cook(dish) {
+            this.processingList.push(dish);
+            const dishIndex = this.waitingList.indexOf(dish);
+            this.waitingList.splice(dishIndex, 1);
+            setTimeout(this.cooking, 2500, dish);
+          },
+          cooking(dish) {
+            const dishIndex = this.processingList.indexOf(dish);
+            this.processingList.splice(dishIndex, 1);
+            this.completedList.push(dish);
+          },
+          deliver(dish) {
+            const dishIndex = this.completedList.indexOf(dish);
+            this.completedList.splice(dishIndex, 1);
+          }
+        },
+        computed: {}
+      }).mount("#app");
+    </script>
+  </body>
+</html>
