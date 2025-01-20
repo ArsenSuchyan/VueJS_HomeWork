@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Задача 5</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  </head>
+  <!-- Самостійно сформуйте масив даних та виведіть фрагмент на зразок поданого (дані не обов’язково повинні співпадати) -->
+  <body>
+    <style>
+      .img {
+        width: 50px;
+      }
+      .table {
+        display: flex;
+        flex-direction: column;
+        gap: 50px;
+        padding: 40px;
+      }
+      .table__item {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .table__item-header {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+      }
+      .table__item-title {
+        font-size: 20px;
+      }
+      .table__item-tags {
+        display: flex;
+        gap: 15px;
+        font-weight: 600;
+      }
+    </style>
+    <div id="app">
+      <div class="table">
+        <div
+          class="table__item"
+          v-for="website in websites"
+          :key="website.title"
+        >
+          <div class="table__item-header">
+            <img :src="website.logo" alt="Image" class="img" />
+            <a :href="website.url">{{website.url}}</a>
+          </div>
+          <div class="table__item-body">
+            <a :href="website.url" class="table__item-title"
+              >{{website.title}}</a
+            >
+            <p class="table__item-description">{{website.description}}</p>
+            <div class="table__item-tags">
+              <div v-for="item in website.subtitles" :key="website.title">
+                {{item}}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const { createApp } = Vue;
+
+      createApp({
+        data() {
+          return {
+            websites: [
+              {
+                title: "Google Search",
+                url: "https://www.google.com",
+                description: "The world's most popular search engine",
+                logo: "https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg",
+                subtitles: [
+                  "Search the web",
+                  "Images",
+                  "Videos",
+                  "News",
+                  "Maps"
+                ]
+              },
+              {
+                title: "YouTube",
+                url: "https://www.youtube.com",
+                description: "Platform for watching and sharing videos",
+                logo: "https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg",
+                subtitles: ["Trending", "Subscriptions", "Library", "History"]
+              },
+              {
+                title: "Wikipedia",
+                url: "https://www.wikipedia.org",
+                description: "Free online encyclopedia that anyone can edit",
+                logo: "https://upload.wikimedia.org/wikipedia/commons/6/63/Wikipedia-logo.png",
+                subtitles: [
+                  "Articles by topic",
+                  "Featured content",
+                  "Current events",
+                  "Random article"
+                ]
+              },
+              {
+                title: "GitHub",
+                url: "https://www.github.com",
+                description: "A platform for version control and collaboration",
+                logo: "https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-mark-github.svg",
+                subtitles: [
+                  "Repositories",
+                  "Explore",
+                  "Marketplace",
+                  "Pricing",
+                  "Resources"
+                ]
+              }
+            ]
+          };
+        },
+        methods: {},
+        computed: {}
+      }).mount("#app");
+    </script>
+  </body>
+</html>

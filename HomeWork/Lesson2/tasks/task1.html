@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Задача 1</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  </head>
+  <!-- Вводимо логіна і пароль. Якщо логін вірний відображаємо смайл. Якщо ні, то: 1)
+  якщо логін = Іван – колір повідомлення про помилку синій 2) якщо хтось інший,
+  то колір повідомлення червоний -->
+  <body>
+    <style>
+      .blue {
+        color: blue;
+      }
+      .red {
+        color: red;
+      }
+    </style>
+    <div id="app">
+      <label>Login: <input type="text" v-model="enteredLogin" /></label>
+      <hr />
+      <label
+        >Password: <input type="password" v-model="enteredPassword"
+      /></label>
+      <hr />
+      <button @click="enter(); ivanCheck()">Go!</button>
+      <hr />
+      <!-- <div>{{result}}</div> -->
+      <img src="img/smile.png" width="100px" v-if="entered&&isCorrect" />
+      <div :class="isIvan" v-else-if="entered&&!isCorrect">
+        Логін і/або пароль введені не вірно
+      </div>
+    </div>
+
+    <script>
+      const { createApp } = Vue;
+
+      createApp({
+        data() {
+          return {
+            enteredLogin: "",
+            enteredPassword: "",
+            result: null,
+            ivanEntered: null,
+            credentialsArr: [
+              { login: "user1", password: "password123" },
+              { login: "admin123", password: "securePass456" },
+              { login: "guest99", password: "letMeIn789" },
+              { login: "alphaUser", password: "alpha987" },
+              { login: "betaTester", password: "beta654" },
+              { login: "charlieX", password: "charlie321" },
+              { login: "deltaForce", password: "delta789" },
+              { login: "echoBravo", password: "echo123" },
+              { login: "foxTrot", password: "fox999" },
+              { login: "gammaRay", password: "gamma555" }
+            ]
+          };
+        },
+        methods: {
+          enter() {
+            let userCredentials = {
+              login: this.enteredLogin,
+              password: this.enteredPassword
+            };
+            for (let i = 0; i < this.credentialsArr.length; i++) {
+              if (
+                this.credentialsArr[i].login === userCredentials.login &&
+                this.credentialsArr[i].password === userCredentials.password
+              ) {
+                this.result = true;
+                break;
+              }
+              this.result = false;
+            }
+          },
+          ivanCheck() {
+            this.enteredLogin === "Ivan"
+              ? (this.ivanEntered = true)
+              : (this.ivanEntered = false);
+          }
+        },
+        computed: {
+          entered() {
+            if (this.result !== null) return true;
+          },
+          isCorrect() {
+            return this.result;
+          },
+          isIvan() {
+            if (this.ivanEntered) return "blue";
+            else return "red";
+          }
+        }
+      }).mount("#app");
+    </script>
+  </body>
+</html>
