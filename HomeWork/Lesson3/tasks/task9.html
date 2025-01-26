@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Задача 9</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <style>
+      #app {
+        display: flex;
+        gap: 150px;
+        padding: 100px;
+      }
+      .block {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        font-size: 20px;
+      }
+      .correct-answers {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        font-size: 20px;
+      }
+      .item {
+        border: 2px solid black;
+        padding: 10px;
+        cursor: pointer;
+      }
+      .chosen {
+        border: 2px solid blue;
+      }
+      .incorrect {
+        border: 2px solid red;
+      }
+    </style>
+  </head>
+  <!--Перекладач. Користувачу виводять змішані картки з словами на англійській і українській мові. Користувач поступово клікає на картки (виділяємо синьою рамкою). Якщо знайдено правильні пари карток, що відповідають одному слову, то видаляємо ці картки. Інакше - виділяємо червоною рамкою і через секунду забираємо рамку.
+ -->
+  <body>
+    <div id="app">
+      <div class="block">
+        <div
+          v-for="word in ukrainianWords"
+          @click="choseUkrainianWord(word)"
+          :class="[selectWordColor(word, chosenUkrainianWord)], isIncorrectWord(word, chosenUkrainianWord)"
+          class="item"
+        >
+          {{word}}
+        </div>
+      </div>
+      <div class="block">
+        <div
+          v-for="word in englishWords"
+          @click="choseEnglishWord(word)"
+          :class="[selectWordColor(word, chosenEnglishWord)], isIncorrectWord(word, chosenEnglishWord)"
+          class="item"
+        >
+          {{word}}
+        </div>
+      </div>
+      <div class="correct-answers">
+        <div v-for="item in correctTranslationList">
+          {{item.ukrainian}} - {{item.english}}
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const { createApp } = Vue;
+      const ukrainianWords = [
+        "сонце",
+        "машина",
+        "книга",
+        "годинник",
+        "місто",
+        "дерево",
+        "квітка",
+        "вода",
+        "стіл",
+        "друг"
+      ];
+      const englishWords = [
+        "clock",
+        "flower",
+        "friend",
+        "tree",
+        "book",
+        "sun",
+        "city",
+        "car",
+        "table",
+        "water"
+      ];
+      const translations = [
+        { ukrainian: "дерево", english: "tree" },
+        { ukrainian: "сонце", english: "sun" },
+        { ukrainian: "вода", english: "water" },
+        { ukrainian: "книга", english: "book" },
+        { ukrainian: "стіл", english: "table" },
+        { ukrainian: "місто", english: "city" },
+        { ukrainian: "машина", english: "car" },
+        { ukrainian: "квітка", english: "flower" },
+        { ukrainian: "годинник", english: "clock" },
+        { ukrainian: "друг", english: "friend" }
+      ];
+
+      createApp({
+        data() {
+          return {
+            ukrainianWords: ukrainianWords,
+            englishWords: englishWords,
+            translations: translations,
+            chosenUkrainianWord: null,
+            chosenEnglishWord: null,
+            correctTranslationList: []
+          };
+        },
+        methods: {
+          choseUkrainianWord(word) {
+            this.chosenUkrainianWord = word;
+            this.isCorrect();
+            if (
+              this.chosenUkrainianWord &&
+              this.chosenEnglishWord &&
+              this.isCorrect() === false
+            ) {
+              setTimeout(() => {
+                this.chosenUkrainianWord = null;
+                this.chosenEnglishWord = null;
+              }, 1000);
+            }
+          },
+          choseEnglishWord(word) {
+            this.chosenEnglishWord = word;
+            this.isCorrect();
+            if (
+              this.chosenUkrainianWord &&
+              this.chosenEnglishWord &&
+              this.isCorrect() === false
+            ) {
+              setTimeout(() => {
+                this.chosenUkrainianWord = null;
+                this.chosenEnglishWord = null;
+                console.log("done");
+              }, 1000);
+            }
+          },
+          selectWordColor(word, chosenWord) {
+            if (word === chosenWord) return "chosen";
+          },
+          isIncorrectWord(word, chosenWord) {
+            if (word === chosenWord && this.isCorrect() === false)
+              return "incorrect";
+          },
+          isCorrect() {
+            if (this.chosenUkrainianWord && this.chosenEnglishWord) {
+              let usersVersion = {
+                ukrainian: this.chosenUkrainianWord,
+                english: this.chosenEnglishWord
+              };
+              if (
+                translations.some(
+                  (el) => JSON.stringify(el) === JSON.stringify(usersVersion)
+                )
+              ) {
+                this.ukrainianWords = this.ukrainianWords.filter(
+                  (el) => el !== this.chosenUkrainianWord
+                );
+                this.englishWords = this.englishWords.filter(
+                  (el) => el !== this.chosenEnglishWord
+                );
+
+                this.chosenUkrainianWord = null;
+                this.chosenEnglishWord = null;
+                this.correctTranslationList.push(usersVersion);
+              } else {
+                return false;
+              }
+            }
+          }
+        },
+        computed: {}
+      }).mount("#app");
+    </script>
+  </body>
+</html>

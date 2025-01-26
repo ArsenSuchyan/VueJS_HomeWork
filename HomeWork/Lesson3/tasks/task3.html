@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Задача 3</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <style>
+      #app {
+        padding: 50px;
+        display: flex;
+        flex-direction: column;
+        gap: 40px;
+        font-size: 25px;
+      }
+      .low-speed {
+        background-color: orange;
+      }
+      .appropriate-speed {
+        background-color: green;
+      }
+      .high-speed {
+        background-color: red;
+      }
+      .attention {
+        animation: blinking 0.5s infinite;
+        width: 100px;
+        height: 100px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+      }
+
+      @keyframes blinking {
+        0% {
+          background-color: white;
+        }
+        100% {
+          background-color: red;
+        }
+      }
+    </style>
+  </head>
+  <!--Вводиться дозволена швидкість і поточна швидкість авто. Якщо не введено дозволену швидкість, то елемент введення поточної швидкості заблокований. Якщо швидкість менше 50% дозволеної, то колір input – оранжевий, якщо від 50% до 100% - зелений, вище 100% - червоний. Якщо значення вище 90% починає блимати повідомлення «Увага!»
+
+ -->
+  <body>
+    <div id="app">
+      <label
+        >Введіть максимальну швидкість
+        <input v-model.lazy.number="maxSpeed" type="number"
+      /></label>
+      <label
+        >Введіть поточну швидкість
+        <input
+          v-model.lazy.number="currentSpeed"
+          :disabled="isDisabled"
+          :class="color"
+          type="number"
+      /></label>
+      <div v-if="attention" class="attention">Увага!</div>
+    </div>
+
+    <script>
+      const { createApp } = Vue;
+
+      createApp({
+        data() {
+          return {
+            maxSpeed: null,
+            currentSpeed: null
+          };
+        },
+        methods: {},
+        computed: {
+          isDisabled() {
+            console.log();
+            return this.maxSpeed ? false : true;
+          },
+          color() {
+            if (this.currentSpeed && this.maxSpeed) {
+              let colorOfSpeed;
+              if (this.currentSpeed < this.maxSpeed * 0.5)
+                colorOfSpeed = "low-speed";
+              else if (this.currentSpeed <= this.maxSpeed)
+                colorOfSpeed = "appropriate-speed";
+              else if (this.currentSpeed > this.maxSpeed)
+                colorOfSpeed = "high-speed";
+              return colorOfSpeed;
+            }
+          },
+          attention() {
+            if (this.currentSpeed) {
+              if (this.currentSpeed > this.maxSpeed * 0.9) return true;
+            }
+          }
+        }
+      }).mount("#app");
+    </script>
+  </body>
+</html>
